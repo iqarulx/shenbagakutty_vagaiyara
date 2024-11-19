@@ -226,136 +226,147 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
   }
 
   Widget _buildChildDetails() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        child: Column(children: [
-          for (var i = 0; i < _profileData["children"].length; i++)
-            Column(
-              children: [
-                ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: _profileData["children"][i]
-                            ["member_child_profile_photo"] ??
-                        emptyProfilePhoto,
-                    placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Container(
+    if (_profileData["children"].isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              for (var i = 0; i < _profileData["children"].length; i++)
+                Column(
+                  children: [
+                    ClipOval(
+                      child: CachedNetworkImage(
+                        imageUrl: _profileData["children"][i]
+                                ["member_child_profile_photo"] ??
+                            emptyProfilePhoto,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            color: Colors.white,
+                          ),
+                        ),
+                        fit: BoxFit.cover,
                         width: 80,
                         height: 80,
-                        color: Colors.white,
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ),
-                    fit: BoxFit.cover,
-                    width: 80,
-                    height: 80,
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "${_profileData["children"][i]["member_child_initial"]} ${_profileData["children"][i]["member_child_name"]}",
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Table(
-                  children: [
-                    profileData(context, "Birth Date",
-                        _profileData["children"][i]["member_child_birth_date"]),
-                    profileData(context, "Gender",
-                        _profileData["children"][i]["member_child_gender"]),
-                    profileData(
-                        context,
-                        "Rasi",
-                        UtilsFunctions.getRasiTamilName(
-                            rasi: _profileData["children"][i]
-                                ["member_child_rasi"])),
-                    profileData(
-                        context,
-                        "Natchathiram",
-                        UtilsFunctions.getNatchathiramTamilName(
-                            natchathiram: _profileData["children"][i]
-                                ["member_child_natchathiram"])),
-                    profileData(
-                        context,
-                        "Birth Date",
-                        _profileData["children"][i]
-                                ["member_child_mobile_number"]
-                            .toString()),
-                    profileData(context, "Education",
-                        _profileData["children"][i]["member_child_education"]),
-                    profileData(
-                        context,
-                        "Marriage Status",
-                        _profileData["children"][i]
-                                    ["member_child_marriage_status"] ==
-                                2
-                            ? "No"
-                            : "Yes"),
-                    if (_profileData["children"][i]
-                            ["member_child_marriage_status"] ==
-                        1)
-                      profileData(
-                          context,
-                          "Partner Name",
-                          _profileData["children"][i]
-                              ["member_child_partner_name"]),
-                    if (_profileData["children"][i]
-                            ["member_child_marriage_status"] ==
-                        1)
-                      profileData(
-                          context,
-                          "Partner Education",
-                          _profileData["children"][i]
-                              ["member_child_partner_education"]),
-                    if (_profileData["children"][i]
-                            ["member_child_marriage_status"] ==
-                        1)
-                      profileData(
-                          context,
-                          "Partner Birth Date",
-                          _profileData["children"][i]
-                              ["member_child_partner_birth_date"]),
-                    if (_profileData["children"][i]
-                            ["member_child_marriage_status"] ==
-                        1)
-                      profileData(
-                          context,
-                          "Marriage Date",
-                          _profileData["children"][i]
-                              ["member_child_marriage_date"]),
-                    if (_profileData["children"][i]
-                            ["member_child_marriage_status"] ==
-                        1)
-                      profileData(
-                          context,
-                          "Partner Rasi",
-                          UtilsFunctions.getRasiTamilName(
-                              rasi: _profileData["children"][i]
-                                  ["member_child_partner_rasi"])),
-                    if (_profileData["children"][i]
-                            ["member_child_marriage_status"] ==
-                        1)
-                      profileData(
-                          context,
-                          "Partner Natchathiram",
-                          UtilsFunctions.getNatchathiramTamilName(
-                              natchathiram: _profileData["children"][i]
-                                  ["member_child_partner_natchathiram"])),
+                    const SizedBox(height: 10),
+                    Text(
+                      "${_profileData["children"][i]["member_child_initial"]} ${_profileData["children"][i]["member_child_name"]}",
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Table(
+                      children: [
+                        profileData(
+                            context,
+                            "Birth Date",
+                            _profileData["children"][i]
+                                ["member_child_birth_date"]),
+                        profileData(context, "Gender",
+                            _profileData["children"][i]["member_child_gender"]),
+                        profileData(
+                            context,
+                            "Rasi",
+                            UtilsFunctions.getRasiTamilName(
+                                rasi: _profileData["children"][i]
+                                    ["member_child_rasi"])),
+                        profileData(
+                            context,
+                            "Natchathiram",
+                            UtilsFunctions.getNatchathiramTamilName(
+                                natchathiram: _profileData["children"][i]
+                                    ["member_child_natchathiram"])),
+                        profileData(
+                            context,
+                            "Birth Date",
+                            _profileData["children"][i]
+                                    ["member_child_mobile_number"]
+                                .toString()),
+                        profileData(
+                            context,
+                            "Education",
+                            _profileData["children"][i]
+                                ["member_child_education"]),
+                        profileData(
+                            context,
+                            "Marriage Status",
+                            _profileData["children"][i]
+                                        ["member_child_marriage_status"] ==
+                                    2
+                                ? "No"
+                                : "Yes"),
+                        if (_profileData["children"][i]
+                                ["member_child_marriage_status"] ==
+                            1)
+                          profileData(
+                              context,
+                              "Partner Name",
+                              _profileData["children"][i]
+                                  ["member_child_partner_name"]),
+                        if (_profileData["children"][i]
+                                ["member_child_marriage_status"] ==
+                            1)
+                          profileData(
+                              context,
+                              "Partner Education",
+                              _profileData["children"][i]
+                                  ["member_child_partner_education"]),
+                        if (_profileData["children"][i]
+                                ["member_child_marriage_status"] ==
+                            1)
+                          profileData(
+                              context,
+                              "Partner Birth Date",
+                              _profileData["children"][i]
+                                  ["member_child_partner_birth_date"]),
+                        if (_profileData["children"][i]
+                                ["member_child_marriage_status"] ==
+                            1)
+                          profileData(
+                              context,
+                              "Marriage Date",
+                              _profileData["children"][i]
+                                  ["member_child_marriage_date"]),
+                        if (_profileData["children"][i]
+                                ["member_child_marriage_status"] ==
+                            1)
+                          profileData(
+                              context,
+                              "Partner Rasi",
+                              UtilsFunctions.getRasiTamilName(
+                                  rasi: _profileData["children"][i]
+                                      ["member_child_partner_rasi"])),
+                        if (_profileData["children"][i]
+                                ["member_child_marriage_status"] ==
+                            1)
+                          profileData(
+                              context,
+                              "Partner Natchathiram",
+                              UtilsFunctions.getNatchathiramTamilName(
+                                  natchathiram: _profileData["children"][i]
+                                      ["member_child_partner_natchathiram"])),
+                      ],
+                    ),
+                    const Divider()
                   ],
-                ),
-                const Divider()
-              ],
-            )
-        ]),
-      ),
-    );
+                )
+            ],
+          ),
+        ),
+      );
+    }
+    return noData();
   }
 
   Widget _buildMemberImages() {
@@ -378,7 +389,11 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: CachedNetworkImage(
-                    imageUrl: _profileData["member_profile_photos"],
+                    imageUrl: _profileData["member_profile_photos"]
+                            .toString()
+                            .isNotEmpty
+                        ? _profileData["member_profile_photos"].toString()
+                        : emptyProfilePhoto,
                     placeholder: (context, url) => Shimmer.fromColors(
                       baseColor: Colors.grey.shade300,
                       highlightColor: Colors.grey.shade100,
@@ -405,7 +420,10 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: CachedNetworkImage(
-                    imageUrl: _profileData["member_wife_photos"],
+                    imageUrl:
+                        _profileData["member_wife_photos"].toString().isNotEmpty
+                            ? _profileData["member_wife_photos"].toString()
+                            : emptyProfilePhoto,
                     placeholder: (context, url) => Shimmer.fromColors(
                       baseColor: Colors.grey.shade300,
                       highlightColor: Colors.grey.shade100,
@@ -436,34 +454,46 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
             const SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                for (var i = 0;
-                    i < _profileData["member_family_photos"].length;
-                    i++)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: CachedNetworkImage(
-                      imageUrl: _profileData["member_family_photos"][i],
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: Container(
-                          width: 200,
-                          height: 200,
-                          color: Colors.white,
+            if (_profileData["member_family_photos"].isNotEmpty)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  for (var i = 0;
+                      i < _profileData["member_family_photos"].length;
+                      i++)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: _profileData["member_family_photos"][i]
+                                .toString()
+                                .isNotEmpty
+                            ? _profileData["member_family_photos"][i].toString()
+                            : emptyProfilePhoto,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(
+                            width: 200,
+                            height: 200,
+                            color: Colors.white,
+                          ),
                         ),
+                        fit: BoxFit.cover,
+                        width: 100,
+                        height: 100,
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
-                      fit: BoxFit.cover,
-                      width: 100,
-                      height: 100,
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
                     ),
-                  ),
-              ],
-            ),
+                ],
+              )
+            else
+              Text(
+                "No family images found",
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: AppColors.greyColor,
+                    ),
+              )
           ],
         )
       ],

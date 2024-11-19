@@ -61,7 +61,9 @@ class _HomeState extends State<Home> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          height: 330,
+          height:
+              MediaQuery.of(context).size.height * 0.4, // 40% of screen height
+          width: MediaQuery.of(context).size.width * 1, // 90% of screen width
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -73,26 +75,33 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 10),
-                Text("Temple Photos",
-                    style: Theme.of(context).textTheme.bodyLarge),
+                Text(
+                  "Temple Photos",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
                 const SizedBox(height: 10),
                 const Divider(),
                 const SizedBox(height: 10),
-                CarouselSlider.builder(
-                  itemCount: imgList.length,
-                  itemBuilder: (context, index, realIndex) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.asset(
-                        imgList[index],
-                        fit: BoxFit.contain,
-                        width: double.infinity,
-                      ),
-                    );
-                  },
-                  options: CarouselOptions(
-                    viewportFraction: 1,
-                    autoPlay: true,
+                Expanded(
+                  child: CarouselSlider.builder(
+                    itemCount: imgList.length,
+                    itemBuilder: (context, index, realIndex) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.asset(
+                          imgList[index],
+                          fit: BoxFit.contain,
+                          width: MediaQuery.of(context).size.width *
+                              0.8, // 80% of screen width
+                        ),
+                      );
+                    },
+                    options: CarouselOptions(
+                      viewportFraction: 1, // Shows one image fully
+                      autoPlay: true,
+                      height: MediaQuery.of(context).size.height *
+                          0.25, // 25% of screen height for slider
+                    ),
                   ),
                 ),
               ],
