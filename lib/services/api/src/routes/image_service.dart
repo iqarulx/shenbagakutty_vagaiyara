@@ -17,14 +17,13 @@ class ImageService {
       var image = base64Encode(bytes);
       final queryParameters = {
         "update_member_id": userId,
-        "image_url": image,
         "image_type": path.extension(file.path).replaceAll('.', ''),
         "image_upload_type": type.name,
-        "prefix": prefix
+        "prefix": prefix,
+        "image_url": image,
       };
       final uri = Uri.parse("$_apiUrl/$_route");
       final response = await http.post(uri, body: json.encode(queryParameters));
-
       if (response.statusCode == 200) {
         if (response.body.isNotEmpty) {
           var d = response.body; // Data

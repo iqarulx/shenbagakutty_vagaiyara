@@ -201,8 +201,14 @@ class _ReceiptState extends State<Receipt> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [_filters(context), _decorText(context), _listView()],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _receiptHandler = _init();
+          setState(() {});
+        },
+        child: ListView(
+          children: [_filters(context), _decorText(context), _listView()],
+        ),
       ),
       appBar: _appbar(context),
     );
@@ -252,6 +258,26 @@ class _ReceiptState extends State<Receipt> {
             itemBuilder: (context, index) {
               if (rList.isNotEmpty) {
                 return ListTile(
+                  onTap: () async {
+                    var r = await Sheet.showSheet(context,
+                        size: 0.2, widget: const ListOption());
+                    if (r != null) {
+                      if (r == 1) {
+                        await Sheet.showSheet(context,
+                            size: 0.9, widget: DetailView(model: rList[index]));
+                      } else if (r == 2) {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => PdfView(
+                              uri: rList[index].receiptPrintUrl,
+                              name: "Receipt - ${rList[index].receiptNumber}",
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  },
                   tileColor: AppColors.pureWhiteColor,
                   leading: Container(
                     height: 25,
@@ -272,34 +298,34 @@ class _ReceiptState extends State<Receipt> {
                     ),
                   ),
                   title: Text(
-                      "${rList[index].statusBaseMemberId} - ${rList[index].memberName}",
-                      style: Theme.of(context).textTheme.bodyLarge),
-                  subtitle: Text("Amount : ${rList[index].amount}",
-                      style: Theme.of(context).textTheme.bodySmall),
-                  trailing: IconButton(
-                    tooltip: "More Options",
-                    icon: const Icon(Icons.more_vert_rounded),
-                    onPressed: () async {
-                      var r = await Sheet.showSheet(context,
-                          size: 0.2, widget: const ListOption());
-                      if (r != null) {
-                        if (r == 1) {
-                          await Sheet.showSheet(context,
-                              size: 0.9,
-                              widget: DetailView(model: rList[index]));
-                        } else if (r == 2) {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => PdfView(
-                                uri: rList[index].receiptPrintUrl,
-                                name: "Receipt - ${rList[index].receiptNumber}",
-                              ),
-                            ),
-                          );
-                        }
-                      }
-                    },
+                    "${rList[index].statusBaseMemberId} - ${rList[index].memberName}",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: RichText(
+                    text: TextSpan(
+                      text: "Amount : ",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: AppColors.blackColor),
+                      children: [
+                        TextSpan(
+                          text: rList[index].amount,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  trailing: Text(
+                    rList[index].receiptDate,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(fontWeight: FontWeight.bold),
                   ),
                 );
               }

@@ -1,7 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:shenbagakutty_vagaiyara/view/screens/receipt/src/pdf_view.dart';
 import '/constants/constants.dart';
 import '/functions/functions.dart';
 import '/utils/utils.dart';
@@ -80,16 +81,6 @@ class _AddReceiptState extends State<AddReceipt> {
           },
         ),
         title: const Text("Add Receipt"),
-        actions: [
-          IconButton(
-            tooltip: "Save Receipt",
-            icon: SvgPicture.asset(SvgAssets.tick),
-            onPressed: () {
-              if (formKey.currentState!.validate()) {}
-              _submitForm();
-            },
-          )
-        ],
       ),
       body: Form(
         key: formKey,
@@ -320,12 +311,54 @@ class _AddReceiptState extends State<AddReceipt> {
           ],
         ),
       ),
+      bottomNavigationBar: bottomAppbar(context),
+    );
+  }
+
+  BottomAppBar bottomAppbar(BuildContext context) {
+    return BottomAppBar(
+      color: Colors.white,
+      surfaceTintColor: Colors.white,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(AppColors.primaryColor),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          minimumSize: MaterialStateProperty.all(const Size(80, 30)),
+          padding: MaterialStateProperty.all(EdgeInsets.zero),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Iconsax.tick_circle, color: AppColors.pureWhiteColor),
+            const SizedBox(width: 10),
+            Text(
+              "Submit",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: AppColors.pureWhiteColor),
+            ),
+          ],
+        ),
+        onPressed: () async {
+          if (formKey.currentState!.validate()) {
+            _submitForm();
+          }
+        },
+      ),
     );
   }
 
   _submitForm() async {
     try {
       futureLoading(context);
+      var result = {};
+
       if (_rType.text == "General Donation") {
         var map = {
           "edit_id": "",
@@ -335,7 +368,7 @@ class _AddReceiptState extends State<AddReceipt> {
           "amount": _amount.text,
         };
 
-        await ReceiptFunctions.saveReceipt(
+        result = await ReceiptFunctions.saveReceipt(
             query: map, type: ReceiptType.generalDonation);
       } else if (_rType.text == "Personal Savings") {
         var map = {
@@ -346,7 +379,7 @@ class _AddReceiptState extends State<AddReceipt> {
           "amount": _amount.text,
         };
 
-        await ReceiptFunctions.saveReceipt(
+        result = await ReceiptFunctions.saveReceipt(
             query: map, type: ReceiptType.personalSavings);
       } else if (_rType.text == "Nandavanam") {
         var map = {
@@ -359,7 +392,7 @@ class _AddReceiptState extends State<AddReceipt> {
           "funeral_to": _funeralTo.text,
         };
 
-        await ReceiptFunctions.saveReceipt(
+        result = await ReceiptFunctions.saveReceipt(
             query: map, type: ReceiptType.nandavanam);
       } else if (_rType.text == "Mudi Kaanikai") {
         var map = {
@@ -373,7 +406,7 @@ class _AddReceiptState extends State<AddReceipt> {
           "count_for_mudikanikai": _countForMudiKanikai.text,
         };
 
-        await ReceiptFunctions.saveReceipt(
+        result = await ReceiptFunctions.saveReceipt(
             query: map, type: ReceiptType.mudiKaanikai);
       } else if (_rType.text == "Pooja Donation") {
         var map = {
@@ -384,7 +417,7 @@ class _AddReceiptState extends State<AddReceipt> {
           "amount": _amount.text,
         };
 
-        await ReceiptFunctions.saveReceipt(
+        result = await ReceiptFunctions.saveReceipt(
             query: map, type: ReceiptType.poojaDonation);
       } else if (_rType.text == "Gold/Silver/Dollar") {
         var map = {
@@ -396,7 +429,7 @@ class _AddReceiptState extends State<AddReceipt> {
           "description": _description.text,
         };
 
-        await ReceiptFunctions.saveReceipt(
+        result = await ReceiptFunctions.saveReceipt(
             query: map, type: ReceiptType.goldSilverDollar);
       } else if (_rType.text == "New Member Registration") {
         var map = {
@@ -407,7 +440,7 @@ class _AddReceiptState extends State<AddReceipt> {
           "amount": _amount.text,
         };
 
-        await ReceiptFunctions.saveReceipt(
+        result = await ReceiptFunctions.saveReceipt(
             query: map, type: ReceiptType.newMemberRegistration);
       } else if (_rType.text == "Old Thalakattu") {
         var map = {
@@ -419,7 +452,7 @@ class _AddReceiptState extends State<AddReceipt> {
           "description": _description.text,
         };
 
-        await ReceiptFunctions.saveReceipt(
+        result = await ReceiptFunctions.saveReceipt(
             query: map, type: ReceiptType.oldThalakattu);
       } else if (_rType.text == "New Thalakattu") {
         var map = {
@@ -434,13 +467,17 @@ class _AddReceiptState extends State<AddReceipt> {
           "poojai_amount": "",
         };
 
-        await ReceiptFunctions.saveReceipt(
+        result = await ReceiptFunctions.saveReceipt(
             query: map, type: ReceiptType.newThalakattu);
       }
       Navigator.pop(context);
       Snackbar.showSnackBar(context,
           content: "Receipt created successfully", isSuccess: true);
       Navigator.pop(context, true);
+      Navigator.push(context, CupertinoPageRoute(builder: (context) {
+        return PdfView(
+            uri: result["head"]["print_url"], name: "Receipt Preview");
+      }));
     } catch (e) {
       Navigator.pop(context);
       Snackbar.showSnackBar(context, content: e.toString(), isSuccess: false);

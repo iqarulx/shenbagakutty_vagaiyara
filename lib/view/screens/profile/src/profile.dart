@@ -543,8 +543,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
             profileData(
               context,
               "Profession",
-              // _profileData["profession_id"].toString(),
-              "",
+              _profileData["profession_name"].toString(),
             ),
             profileData(
               context,

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import '/services/services.dart';
 import '/constants/constants.dart';
@@ -19,9 +20,10 @@ class AuthService {
         'verify_otp_number': null,
         'mobile_number': mobileNumber,
         'member_id': memberId,
-        'fcm_id': await NotificationService.getFCM(),
+        'fcm_id': Platform.isAndroid
+            ? await NotificationService.getFCM()
+            : await NotificationService.getAPNSToken(),
       };
-      print(json.encode(queryParameters));
       final uri = Uri.parse("$_apiUrl/$_route");
       final response = await http.post(uri, body: json.encode(queryParameters));
       if (response.statusCode == 200) {

@@ -141,7 +141,7 @@ class _ProfileEditState extends State<ProfileEdit>
     _selectedNatchathiram = data["natchathiram"].toString();
     _wifeName.text = data["wife_name"].toString();
     _wifeEducation.text = data["wife_education"].toString();
-    // _profession.text = data["profession_name"].toString();
+    _profession.text = data["profession_name"].toString();
     _selectedProfessionId = data["profession_id"].toString();
     _wifeRasi.text =
         UtilsFunctions.getRasiTamilName(rasi: data["wife_rasi"].toString());

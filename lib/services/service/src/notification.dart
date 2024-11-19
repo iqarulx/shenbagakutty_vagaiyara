@@ -85,6 +85,11 @@ class NotificationService {
     return fcmToken;
   }
 
+  static Future<String?> getAPNSToken() async {
+    final aspnToken = await FirebaseMessaging.instance.getAPNSToken();
+    return aspnToken;
+  }
+
   static Future<void> showFirebaseNotification(RemoteMessage message) async {
     await notification.show(
       Random().nextInt(10000),

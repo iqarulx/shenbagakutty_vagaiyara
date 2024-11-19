@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
           onPressed: () {
             scaffoldKey.currentState?.openDrawer();
           },
-          icon: const Icon(Iconsax.menu),
+          icon: const Icon(Icons.menu_rounded),
           tooltip: "Back",
         ),
         title: const Text("Dashboard"),
@@ -61,7 +61,7 @@ class _HomeState extends State<Home> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          height: 300,
+          height: 330,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
